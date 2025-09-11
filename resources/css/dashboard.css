@@ -1,0 +1,59 @@
+/* ===== Sidebar Style ===== */
+aside {
+    width: 240px;
+    min-height: 100vh;
+    background-color: #f8f9fa;
+    border-right: 1px solid #ddd;
+    padding: 1rem;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+main {
+    margin-left: 240px; /* supaya konten tidak ketutup sidebar */
+    padding: 1rem;
+}
+
+/* Title dan info user */
+aside h5 {
+    font-weight: bold;
+    margin-bottom: 0.2rem;
+}
+aside p {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+/* Menu */
+aside .nav-link {
+    color: #333;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    transition: all 0.2s;
+}
+
+aside .nav-link:hover {
+    background-color: #e9ecef;
+    color: #000;
+}
+
+/* Aktif menu */
+aside .nav-link.active {
+    background-color: #0d6efd;
+    color: #fff;
+}
+
+/* Submenu (collapse) */
+aside .collapse .nav-link {
+    font-size: 0.9rem;
+    padding-left: 1.5rem;
+}
+
+/* ===== Icon Rotate Dropdown ===== */
+.rotate {
+    transition: transform 0.3s ease;
+}
+.rotate.down {
+    transform: rotate(180deg);
+}
