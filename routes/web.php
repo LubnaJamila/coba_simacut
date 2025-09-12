@@ -7,6 +7,7 @@ use App\Http\Controllers\CutiTahunanController;
 use App\Http\Controllers\DashboardHRDController;
 use App\Http\Controllers\DashboardSuperadminController;
 use App\Http\Controllers\KaryawanController;
+use App\Http\Controllers\RiwayatCutiHRDController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -30,6 +31,8 @@ Route::post('/logout',[AuthController::class,'logout'])->name('logout')->middlew
 
 Route::middleware(['auth', 'hrd'])->group(function () {
     Route::get('/dashboard_hrd', [DashboardHRDController::class,'index'])->name('dashboard_hrd');
+    Route::get('/riwayat_pengajuan', [RiwayatCutiHRDController::class,'index'])->name('riwayat_pengajuan.index');
+    Route::get('/riwayat_pengajuan/export-pdf', [RiwayatCutiHRDController::class, 'exportPdf'])->name('cuti.exportPdf');
     Route::get('/cuti_tahunan',[CutiTahunanController::class,'index'])->name('cuti_tahunan');
     Route::post('/cuti_tahunan_store',[CutiTahunanController::class,'store'])->name('cuti_tahunan.store');
     Route::get('/cuti_bersama', [CutiBersamaController::class,'index'])->name('cuti_bersama');

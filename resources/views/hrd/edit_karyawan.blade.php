@@ -4,6 +4,26 @@
     <div class="container mt-4">
         <h2>Form Edit Karyawan</h2>
 
+        @if ($errors->has('custom_error'))
+            <div class="alert alert-danger">
+                {{ $errors->first('custom_error') }}
+            </div>
+        @endif
+
+        {{-- Pesan error validasi bawaan --}}
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul class="mb-0">
+                    @foreach ($errors->all() as $error)
+                        @if ($error !== $errors->first('custom_error'))
+                            {{-- jangan dobel --}}
+                            <li>{{ $error }}</li>
+                        @endif
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
         <form id="formKaryawan" action="{{ route('karyawan.update', $karyawan->id_user) }}" method="POST"
             enctype="multipart/form-data">
             @csrf
@@ -67,6 +87,10 @@
                     <label for="status_karyawan" class="form-label">Status Karyawan</label>
                     <select class="form-select" id="status_karyawan" name="status_karyawan" required>
                         <option value="">Pilih</option>
+                        <option value="Probation"
+                            {{ old('status_karyawan', $karyawan->status_karyawan) == 'Probation' ? 'selected' : '' }}>
+                            Probation
+                        </option>
                         <option value="PKWT"
                             {{ old('status_karyawan', $karyawan->status_karyawan) == 'PKWT' ? 'selected' : '' }}>PKWT
                         </option>
@@ -156,29 +180,40 @@
                     </select>
                     <small class="text-danger d-none" id="roleError">Role wajib dipilih</small>
                 </div>
-                @php
-                    $status = old('status_akun', $karyawan->status_akun);
-                @endphp
+
 
                 <div class="col-md-4">
                     <label for="status_akun" class="form-label">Status Akun</label>
                     <select class="form-select" id="status_akun" name="status_akun" required>
-                        <option value="">Pilih</option>
+                        @php
+                            $status = old('status_akun', $karyawan->status_akun);
+                        @endphp
 
-                        {{-- Tampilkan status sekarang kalau bukan pengaktifan/penonaktifan --}}
-                        @if ($status == 'aktif')
-                            <option value="aktif" selected disabled>Aktif (tidak bisa diubah langsung)</option>
-                        @elseif ($status == 'nonaktif')
-                            <option value="nonaktif" selected disabled>Nonaktif (tidak bisa diubah langsung)</option>
+                        {{-- Tampilkan status asli dari DB --}}
+                        <option value="{{ $karyawan->status_akun }}" selected>
+                            {{ ucfirst($karyawan->status_akun) }} (default)
+                        </option>
+
+                        {{-- Kalau statusnya pengaktifan/aktif maka opsinya penonaktifan --}}
+                        @if (in_array($karyawan->status_akun, ['aktif', 'pengaktifan']))
+                            <option value="nonaktif" {{ $status == 'nonaktif' ? 'selected' : '' }}>
+                                Non-Aktifkan
+                            </option>
                         @endif
 
-                        {{-- Pilihan yang bisa dipilih HRD --}}
-                        <option value="pengaktifan" {{ $status == 'pengaktifan' ? 'selected' : '' }}>Pengaktifan</option>
-                        <option value="penonaktifan" {{ $status == 'penonaktifan' ? 'selected' : '' }}>Penonaktifan
-                        </option>
+                        {{-- Kalau statusnya penonaktifan maka opsinya pengaktifan --}}
+                        @if ($karyawan->status_akun == 'nonaktif')
+                            <option value="pengaktifan" {{ $status == 'pengaktifan' ? 'selected' : '' }}>
+                                Aktifkan Kembali
+                            </option>
+                        @endif
                     </select>
-                    <small class="text-danger d-none" id="statusError">Status wajib dipilih</small>
                 </div>
+
+
+
+
+
 
                 <div class="col-md-4">
                     <label for="email" class="form-label">Email</label>

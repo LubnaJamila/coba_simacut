@@ -4,6 +4,27 @@
     <div class="container mt-4">
         <h2>Form Tambah Karyawan</h2>
 
+        {{-- Pesan error dari try-catch --}}
+        @if ($errors->has('custom_error'))
+            <div class="alert alert-danger">
+                {{ $errors->first('custom_error') }}
+            </div>
+        @endif
+
+        {{-- Pesan error validasi bawaan --}}
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul class="mb-0">
+                    @foreach ($errors->all() as $error)
+                        @if ($error !== $errors->first('custom_error'))
+                            {{-- jangan dobel --}}
+                            <li>{{ $error }}</li>
+                        @endif
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
         <form id="formKaryawan" action="{{ route('karyawan.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
 
@@ -59,7 +80,7 @@
                         <option value="PKWT">PKWT</option>
                         <option value="PKWTT">PKWTT</option>
                     </select>
-                    <small class="text-danger d-none" id="skError">Jenis kelamin wajib dipilih</small>
+                    <small class="text-danger d-none" id="statusKaryawanError">Jenis kelamin wajib dipilih</small>
                 </div>
                 <div class="col-md-4">
                     <label for="tanggal_mulai_kerja" class="form-label">Tanggal Mulai Kontrak</label>
@@ -120,9 +141,6 @@
                     <small class="text-danger d-none" id="roleError">Role wajib dipilih</small>
                 </div>
                 <div class="col-md-3">
-                    <input type="hidden" name="status_akun" value="pengaktifan">
-                </div>
-                <div class="col-md-3">
                     <label for="email" class="form-label">Email</label>
                     <input type="email" class="form-control" id="email" name="email" required>
                     <small class="text-danger d-none" id="emailError">Format email tidak valid</small>
@@ -139,109 +157,111 @@
     </div>
 
     <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        function toggleError(el, condition) {
-            if (condition) el.classList.remove("d-none");
-            else el.classList.add("d-none");
-        }
-
-        const nik = document.getElementById("nik");
-        const nikError = document.getElementById("nikError");
-
-        const telp = document.getElementById("no_telp");
-        const telpError = document.getElementById("telpError");
-
-        const npwp = document.getElementById("no_npwp");
-        const npwpError = document.getElementById("npwpError");
-
-        const email = document.getElementById("email");
-        const emailError = document.getElementById("emailError");
-
-        const password = document.getElementById("password");
-        const passwordError = document.getElementById("passwordError");
-
-        const tglMulai = document.getElementById("tanggal_mulai_kerja");
-        const tglSelesai = document.getElementById("tanggal_selesai_kerja");
-        const tglError = document.getElementById("tglError");
-
-        const statusKaryawan = document.getElementById("status_karyawan");
-
-        // --- Validasi input dasar ---
-        nik.addEventListener("input", function() {
-            toggleError(nikError, !/^[0-9]{16}$/.test(nik.value));
-        });
-
-        telp.addEventListener("input", function() {
-            toggleError(telpError, telp.value !== "" && !/^[0-9]{10,15}$/.test(telp.value));
-        });
-
-        npwp.addEventListener("input", function() {
-            toggleError(npwpError, npwp.value !== "" && !/^[0-9]{15}$/.test(npwp.value));
-        });
-
-        email.addEventListener("input", function() {
-            toggleError(emailError, !email.validity.valid);
-        });
-
-        password.addEventListener("input", function() {
-            toggleError(passwordError, password.value.length < 6);
-        });
-
-        // --- Validasi tanggal ---
-        tglMulai.addEventListener('change', () => {
-            tglSelesai.min = tglMulai.value;
-            if (tglSelesai.value && tglSelesai.value < tglMulai.value) {
-                tglSelesai.value = tglMulai.value;
+        document.addEventListener("DOMContentLoaded", function() {
+            function toggleError(el, condition) {
+                if (condition) el.classList.remove("d-none");
+                else el.classList.add("d-none");
             }
-        });
 
-        tglSelesai.addEventListener('change', () => {
-            toggleError(tglError, tglSelesai.value && tglSelesai.value < tglMulai.value);
-        });
+            const nik = document.getElementById("nik");
+            const nikError = document.getElementById("nikError");
 
-        // --- Atur tanggal selesai kerja berdasarkan status ---
-        statusKaryawan.addEventListener("change", function() {
-            if (this.value === "PKWTT") {
-                tglSelesai.disabled = true;
-                tglSelesai.required = false;
-                tglSelesai.value = ""; // reset value
-                toggleError(tglError, false);
-            } else {
-                tglSelesai.disabled = false;
-                tglSelesai.required = true;
+            const telp = document.getElementById("no_telp");
+            const telpError = document.getElementById("telpError");
+
+            const npwp = document.getElementById("no_npwp");
+            const npwpError = document.getElementById("npwpError");
+
+            const email = document.getElementById("email");
+            const emailError = document.getElementById("emailError");
+
+            const password = document.getElementById("password");
+            const passwordError = document.getElementById("passwordError");
+
+            const tglMulai = document.getElementById("tanggal_mulai_kerja");
+            const tglSelesai = document.getElementById("tanggal_selesai_kerja");
+            const tglError = document.getElementById("tglError");
+
+            const statusKaryawan = document.getElementById("status_karyawan");
+            const statusKaryawanError = document.getElementById("statusKaryawanError");
+
+            // --- Validasi input dasar ---
+            nik.addEventListener("input", function() {
+                toggleError(nikError, !/^[0-9]{16}$/.test(nik.value));
+            });
+
+            telp.addEventListener("input", function() {
+                toggleError(telpError, telp.value !== "" && !/^[0-9]{10,15}$/.test(telp.value));
+            });
+
+            npwp.addEventListener("input", function() {
+                toggleError(npwpError, npwp.value !== "" && !/^[0-9]{15}$/.test(npwp.value));
+            });
+
+            email.addEventListener("input", function() {
+                toggleError(emailError, !email.validity.valid);
+            });
+
+            password.addEventListener("input", function() {
+                toggleError(passwordError, password.value.length < 6);
+            });
+
+            // --- Validasi tanggal ---
+            tglMulai.addEventListener('change', () => {
                 tglSelesai.min = tglMulai.value;
-            }
-        });
-
-        // --- Validasi file ---
-        function validateFile(input, allowedTypes, maxMB, errorEl) {
-            input.addEventListener("change", function() {
-                const file = input.files[0];
-                if (!file) {
-                    errorEl.classList.add("d-none");
-                    return;
+                if (tglSelesai.value && tglSelesai.value < tglMulai.value) {
+                    tglSelesai.value = tglMulai.value;
                 }
-                const typeValid = allowedTypes.includes(file.type);
-                const sizeValid = file.size <= maxMB * 1024 * 1024;
-                toggleError(errorEl, !(typeValid && sizeValid));
             });
-        }
 
-        validateFile(document.getElementById("file_ktp"),
-            ["image/jpeg", "image/png", "application/pdf"], 2, document.getElementById("ktpError"));
+            tglSelesai.addEventListener('change', () => {
+                toggleError(tglError, tglSelesai.value && tglSelesai.value < tglMulai.value);
+            });
 
-        validateFile(document.getElementById("file_npwp"),
-            ["image/jpeg", "image/png", "application/pdf"], 2, document.getElementById("npwpFileError"));
+            // --- Atur tanggal selesai kerja berdasarkan status ---
+            statusKaryawan.addEventListener("change", function() {
+                if (this.value === "PKWTT") {
+                    tglSelesai.disabled = true;
+                    tglSelesai.required = false;
+                    tglSelesai.value = "";
+                    toggleError(tglError, false);
+                } else {
+                    tglSelesai.disabled = false;
+                    tglSelesai.required = true;
+                    tglSelesai.min = tglMulai.value;
+                }
+                toggleError(statusKaryawanError, this.value === "");
+            });
 
-        validateFile(document.getElementById("file_sk_kontrak"),
-            ["application/pdf"], 2, document.getElementById("skError"));
+            // --- Validasi file ---
+            function validateFile(input, allowedTypes, maxMB, errorEl) {
+                input.addEventListener("change", function() {
+                    const file = input.files[0];
+                    if (!file) {
+                        errorEl.classList.add("d-none");
+                        return;
+                    }
+                    const typeValid = allowedTypes.includes(file.type);
+                    const sizeValid = file.size <= maxMB * 1024 * 1024;
+                    toggleError(errorEl, !(typeValid && sizeValid));
+                });
+            }
 
-        // --- Auto uppercase untuk text ---
-        document.querySelectorAll('input[type="text"]').forEach(input => {
-            input.addEventListener('input', function() {
-                this.value = this.value.toUpperCase();
+            validateFile(document.getElementById("file_ktp"),
+                ["image/jpeg", "image/png", "application/pdf"], 2, document.getElementById("ktpError"));
+
+            validateFile(document.getElementById("file_npwp"),
+                ["image/jpeg", "image/png", "application/pdf"], 2, document.getElementById("npwpFileError"));
+
+            validateFile(document.getElementById("file_sk_kontrak"),
+                ["application/pdf"], 2, document.getElementById("skError"));
+
+            // --- Auto uppercase untuk text ---
+            document.querySelectorAll('input[type="text"]').forEach(input => {
+                input.addEventListener('input', function() {
+                    this.value = this.value.toUpperCase();
+                });
             });
         });
-    });
-</script>
+    </script>
 @endsection

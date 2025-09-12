@@ -13,6 +13,8 @@ class DashboardHRDController extends Controller
     public function index(Request $request)
 {
     $tahunCutiTahunanList = JenisCuti::select('tahun')
+                            ->whereNotNull('tahun')
+                            ->where('tahun', '!=', '')
                             ->distinct()
                             ->orderBy('tahun','asc')
                             ->pluck('tahun');

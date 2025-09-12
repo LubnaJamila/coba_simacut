@@ -16,7 +16,7 @@
         {{-- Menu HRD --}}
         @if (auth()->user()->role_user == 'hrd')
             <li class="nav-item"><a class="nav-link" href="{{route('dashboard_hrd')}}">Dashboard</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">Riwayat Pengajuan</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{route('riwayat_pengajuan.index')}}">Riwayat Pengajuan</a></li>
             <li class="nav-item">
                 <a class="nav-link d-flex justify-content-between align-items-center" data-bs-toggle="collapse"
                     href="#menuCuti" role="button" aria-expanded="false" aria-controls="menuCuti"
