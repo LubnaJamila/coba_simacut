@@ -76,7 +76,7 @@
                     <label for="status_karyawan" class="form-label">Status Karyawan</label>
                     <select class="form-select" id="status_karyawan" name="status_karyawan" required>
                         <option value="">Pilih</option>
-                        <option value="probation">Probation</option>
+                        <option value="Probation">Probation</option>
                         <option value="PKWT">PKWT</option>
                         <option value="PKWTT">PKWTT</option>
                     </select>
@@ -135,8 +135,8 @@
                     <label for="role_user" class="form-label">Role User</label>
                     <select class="form-select" id="role_user" name="role_user" required>
                         <option value="">Pilih</option>
-                        <option value="atasan">Atasan</option>
-                        <option value="pegawai">Pegawai</option>
+                        <option value="Atasan">Atasan</option>
+                        <option value="Pegawai">Pegawai</option>
                     </select>
                     <small class="text-danger d-none" id="roleError">Role wajib dipilih</small>
                 </div>
@@ -145,11 +145,7 @@
                     <input type="email" class="form-control" id="email" name="email" required>
                     <small class="text-danger d-none" id="emailError">Format email tidak valid</small>
                 </div>
-                <div class="col-md-3">
-                    <label for="password" class="form-label">Password</label>
-                    <input type="password" class="form-control" id="password" name="password" required minlength="6">
-                    <small class="text-danger d-none" id="passwordError">Password minimal 6 karakter</small>
-                </div>
+                
             </div>
 
             <button type="submit" class="btn btn-primary">Simpan</button>
@@ -175,9 +171,6 @@
             const email = document.getElementById("email");
             const emailError = document.getElementById("emailError");
 
-            const password = document.getElementById("password");
-            const passwordError = document.getElementById("passwordError");
-
             const tglMulai = document.getElementById("tanggal_mulai_kerja");
             const tglSelesai = document.getElementById("tanggal_selesai_kerja");
             const tglError = document.getElementById("tglError");
@@ -200,10 +193,6 @@
 
             email.addEventListener("input", function() {
                 toggleError(emailError, !email.validity.valid);
-            });
-
-            password.addEventListener("input", function() {
-                toggleError(passwordError, password.value.length < 6);
             });
 
             // --- Validasi tanggal ---

@@ -129,8 +129,8 @@ class CutiBersamaController extends Controller
         $kuotaTahunIni = $jenisTahunan->kuota;
         $totalCutiBersama = CutiBersama::whereYear('tanggal_cuti_bersama', $year)->count();
 
-        $users = User::where('role_user', 'pegawai')
-            ->where('status_akun', 'aktif')
+        $users = User::where('role_user', 'Pegawai')
+            ->where('status_akun', 'Active')
             ->get();
 
         foreach ($users as $user) {

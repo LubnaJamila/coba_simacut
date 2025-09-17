@@ -172,10 +172,10 @@
                     <label for="role_user" class="form-label">Role User</label>
                     <select class="form-select" id="role_user" name="role_user" required>
                         <option value="">Pilih</option>
-                        <option value="atasan" {{ old('role_user', $karyawan->role_user) == 'atasan' ? 'selected' : '' }}>
+                        <option value="Atasan" {{ old('role_user', $karyawan->role_user) == 'Atasan' ? 'selected' : '' }}>
                             Atasan</option>
-                        <option value="pegawai"
-                            {{ old('role_user', $karyawan->role_user) == 'pegawai' ? 'selected' : '' }}>
+                        <option value="Pegawai"
+                            {{ old('role_user', $karyawan->role_user) == 'Pegawai' ? 'selected' : '' }}>
                             Pegawai</option>
                     </select>
                     <small class="text-danger d-none" id="roleError">Role wajib dipilih</small>
@@ -195,15 +195,15 @@
                         </option>
 
                         {{-- Kalau statusnya pengaktifan/aktif maka opsinya penonaktifan --}}
-                        @if (in_array($karyawan->status_akun, ['aktif', 'pengaktifan']))
-                            <option value="nonaktif" {{ $status == 'nonaktif' ? 'selected' : '' }}>
+                        @if (in_array($karyawan->status_akun, ['Active', 'Waiting-Activation']))
+                            <option value="Non-Active" {{ $status == 'Non-Active' ? 'selected' : '' }}>
                                 Non-Aktifkan
                             </option>
                         @endif
 
                         {{-- Kalau statusnya penonaktifan maka opsinya pengaktifan --}}
-                        @if ($karyawan->status_akun == 'nonaktif')
-                            <option value="pengaktifan" {{ $status == 'pengaktifan' ? 'selected' : '' }}>
+                        @if ($karyawan->status_akun == 'Non-Active')
+                            <option value="Waiting-Activation" {{ $status == 'Waiting-Activation' ? 'selected' : '' }}>
                                 Aktifkan Kembali
                             </option>
                         @endif

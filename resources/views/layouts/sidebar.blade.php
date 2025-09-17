@@ -2,19 +2,19 @@
 
     <ul class="nav flex-column">
         {{-- Menu superadmin --}}
-         @if (auth()->user()->role_user === 'superadmin')
-            <li class="nav-item"><a class="nav-link" href="#">Kelola Semua User</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">Pengaturan Sistem</a></li>
+         @if (auth()->user()->role_user === 'Superadmin')
+            <li class="nav-item"><a class="nav-link" href="{{route('dashboard_superadmin')}}">Validasi Akun</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{route('data_akun_active')}}">Data Akun</a></li>
         @endif
 
         {{-- Menu admin --}}
-        @if (auth()->user()->role_user == 'admin')
+        @if (auth()->user()->role_user == 'Atasan')
             <li class="nav-item"><a class="nav-link" href="#">Laporan Admin</a></li>
             <li class="nav-item"><a class="nav-link" href="#">Kelola Produk</a></li>
         @endif
 
         {{-- Menu HRD --}}
-        @if (auth()->user()->role_user == 'hrd')
+        @if (auth()->user()->role_user == 'HRD')
             <li class="nav-item"><a class="nav-link" href="{{route('dashboard_hrd')}}">Dashboard</a></li>
             <li class="nav-item"><a class="nav-link" href="{{route('riwayat_pengajuan.index')}}">Riwayat Pengajuan</a></li>
             <li class="nav-item">
@@ -36,7 +36,7 @@
         @endif
 
         {{-- Menu user biasa --}}
-        @if (auth()->user()->role_user == 'user')
+        @if (auth()->user()->role_user == 'Pegawai')
             <li class="nav-item"><a class="nav-link" href="#">Profil Saya</a></li>
             <li class="nav-item"><a class="nav-link" href="#">Pengajuan Cuti</a></li>
         @endif

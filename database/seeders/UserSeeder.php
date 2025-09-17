@@ -18,16 +18,18 @@ class UserSeeder extends Seeder
             'nama_lengkap' => 'HRD',
             'email' => 'hrdtest@gmail.com',
             'password' => Hash::make('123456'), // password di-hash
-            'role_user' => 'hrd',
-            'status_akun' => 'aktif', // misalnya ada kolom status
+            'role_user' => 'HRD',
+            'status_akun' => 'Active',
+            'must_change_password' => false,
         ]);
 
         User::create([
             'nama_lengkap' => 'Super Admin',
             'email' => 'superadmin@gmail.com',
             'password' => Hash::make('123456'),
-            'role_user' => 'superadmin',
-            'status_akun' => 'aktif',
+            'role_user' => 'Superadmin',
+            'status_akun' => 'Active',
+            'must_change_password' => false,
         ]);
     }
 }

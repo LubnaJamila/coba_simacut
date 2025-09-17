@@ -20,8 +20,12 @@
                         <p><strong>No NPWP:</strong> {{ $karyawan->no_npwp }}</p>
                         <p><strong>Tanggal Kontrak Kerja:</strong>
                             {{ $karyawan->tanggal_mulai_kerja?->format('Y-m-d') }}
-                            s/d
-                            {{ $karyawan->tanggal_selesai_kerja?->format('Y-m-d') }}
+                            <strong>s/d</strong>
+                            @if ($karyawan->tanggal_selesai_kerja)
+                                {{ $karyawan->tanggal_selesai_kerja->format('Y-m-d') }}
+                            @else
+                                -
+                            @endif
                         </p>
                         <p><strong>Divisi:</strong> {{ $karyawan->divisi }}</p>
                         <p><strong>Jabatan:</strong> {{ $karyawan->jabatan }}</p>

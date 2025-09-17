@@ -19,7 +19,7 @@ class DashboardHRDController extends Controller
                             ->orderBy('tahun','asc')
                             ->pluck('tahun');
 
-    $divisiList = User::where('role_user', 'pegawai')
+    $divisiList = User::where('role_user', 'Pegawai')
                             ->select('divisi')
                             ->distinct()
                             ->pluck('divisi');
@@ -27,7 +27,7 @@ class DashboardHRDController extends Controller
     $tahun = $request->get('tahun', Carbon::now()->year);
     $divisi = $request->get('divisi', null);
 
-    $karyawanQuery = User::whereIn('role_user', ['pegawai', 'atasan']);
+    $karyawanQuery = User::whereIn('role_user', ['Pegawai']);
     if ($divisi) {
         $karyawanQuery->where('divisi', $divisi);
     }
@@ -75,11 +75,11 @@ class DashboardHRDController extends Controller
     // ======================
 
     // Total karyawan
-    $totalAktif = User::whereIn('role_user', ['pegawai', 'atasan'])
-                    ->where('status_akun', 'aktif')
+    $totalAktif = User::whereIn('role_user', ['Pegawai', 'Atasan'])
+                    ->where('status_akun', 'Active')
                     ->count();
-    $totalNonAktif = User::whereIn('role_user', ['pegawai', 'atasan'])
-                    ->where('status_akun', 'non-aktif')
+    $totalNonAktif = User::whereIn('role_user', ['Pegawai', 'Atasan'])
+                    ->where('status_akun', 'Non-Active')
                     ->count();
 
     // Pengajuan cuti
@@ -96,8 +96,8 @@ class DashboardHRDController extends Controller
 
     $summary = [
         'karyawan' => [
-            'aktif' => $totalAktif,
-            'nonaktif' => $totalNonAktif,
+            'Active' => $totalAktif,
+            'Non-Active' => $totalNonAktif,
         ],
         'pengajuan' => [
             'diterima' => $totalDiterima,

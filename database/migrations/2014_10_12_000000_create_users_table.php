@@ -9,6 +9,8 @@ return new class extends Migration {
     {
         Schema::create('users', function (Blueprint $table) {
             $table->Increments('id_user');
+
+            // Identitas
             $table->string('nama_lengkap');
             $table->string('nik')->unique()->nullable();
             $table->string('no_telp')->nullable();
@@ -19,16 +21,30 @@ return new class extends Migration {
             $table->date('tanggal_selesai_kerja')->nullable();
             $table->string('divisi')->nullable();
             $table->string('jabatan')->nullable();
+            $table->enum('status_karyawan', ['Probation', 'PKWT', 'PKWTT']);
+
+            // File Upload
             $table->string('file_ktp')->nullable();
             $table->string('file_npwp')->nullable();
             $table->string('file_sk_kontrak')->nullable();
-            $table->enum('role_user', ['superadmin', 'atasan', 'hrd', 'pegawai']);
-            $table->enum('status_akun', ['pengaktifan', 'aktif', 'penonaktifan', 'nonaktif'])->default('pengaktifan');
-            $table->enum('status_karyawan', ['Probation', 'PKWT', 'PKWTT']);
+
+            // Akun
+            $table->enum('role_user', ['Superadmin', 'Atasan', 'HRD', 'Pegawai']);
+            $table->enum('status_akun', ['Waiting-Activation', 'Active', 'Non-Active'])->default('Waiting-Activation');
             $table->string('email')->unique();
             $table->string('password');
-            $table->string('kode_otp')->nullable();
-            $table->dateTime('expired_otp')->nullable();
+            $table->text('password_encrypted')->nullable();
+            $table->boolean('must_change_password')->default(true);
+            
+            // Reset Password
+            $table->string('password_reset_token', 100)->nullable();
+            $table->timestamp('password_reset_expires_at')->nullable();
+            $table->string('otp_code')->nullable();
+            $table->timestamp('otp_sent_at')->nullable();
+            $table->timestamp('expired_otp')->nullable();
+            
+            // Laravel default
+            $table->rememberToken();
             $table->timestamps();
         });
     }

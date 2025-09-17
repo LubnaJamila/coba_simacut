@@ -13,11 +13,11 @@
                     </div>
                     <div class="card-body d-flex justify-content-between">
                         <div class="text-center flex-fill">
-                            <h3 class="text-primary fw-bold">{{ $summary['karyawan']['aktif'] }}</h3>
+                            <h3 class="text-primary fw-bold">{{ $summary['karyawan']['Active'] }}</h3>
                             <p class="mb-0">Aktif</p>
                         </div>
                         <div class="text-center flex-fill">
-                            <h3 class="text-secondary fw-bold">{{ $summary['karyawan']['nonaktif'] }}</h3>
+                            <h3 class="text-secondary fw-bold">{{ $summary['karyawan']['Non-Active'] }}</h3>
                             <p class="mb-0">Non-Aktif</p>
                         </div>
                     </div>
@@ -116,7 +116,7 @@
 
             </thead>
             <tbody>
-                @forelse($data as $index => $row)
+                @foreach($data as $index => $row)
                     <tr>
                         <td>{{ $index + 1 }}</td>
                         <td>{{ $row['nama'] }}</td>
@@ -138,11 +138,7 @@
                             @endif
                         </td>
                     </tr>
-                @empty
-                    <tr>
-                        <td colspan="7" class="text-center">Tidak ada data karyawan</td>
-                    </tr>
-                @endforelse
+                @endforeach
             </tbody>
         </table>
     </div>

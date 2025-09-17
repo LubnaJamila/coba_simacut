@@ -45,8 +45,8 @@ class CutiTahunanController extends Controller
             ->get();
 
         // ✅ Cek apakah ada pegawai aktif
-        $adaPegawaiAktif = \App\Models\User::where('role_user', 'pegawai')
-                            ->where('status_akun', 'aktif')
+        $adaPegawaiAktif = \App\Models\User::where('role_user', 'Pegawai')
+                            ->where('status_akun', 'Active')
                             ->exists();
 
         return view('hrd.cuti_tahunan', compact(
@@ -84,8 +84,8 @@ class CutiTahunanController extends Controller
         );
 
         // 2. Ambil semua pegawai aktif
-        $users = User::where('role_user', 'pegawai')
-                     ->where('status_akun', 'aktif')
+        $users = User::where('role_user', 'Pegawai')
+                     ->where('status_akun', 'Active')
                      ->get();
 
         // 3. Hitung total cuti bersama di tahun ini

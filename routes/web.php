@@ -4,8 +4,11 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CutiBersamaController;
 use App\Http\Controllers\CutiNonTahunanController;
 use App\Http\Controllers\CutiTahunanController;
+use App\Http\Controllers\DashboardAtasanController;
 use App\Http\Controllers\DashboardHRDController;
+use App\Http\Controllers\DashboardPegawaiController;
 use App\Http\Controllers\DashboardSuperadminController;
+use App\Http\Controllers\DataAkunController;
 use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\RiwayatCutiHRDController;
 use Illuminate\Support\Facades\Route;
@@ -25,11 +28,29 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/login',[AuthController::class,'showLoginForm'])->name('login')->middleware('guest');
-Route::post('/login',[AuthController::class,'login'])->middleware('guest');
-Route::post('/logout',[AuthController::class,'logout'])->name('logout')->middleware('auth');
+// ---------------- LOGIN / LOGOUT ----------------
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [AuthController::class, 'login'])->name('login.process');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::middleware(['auth', 'hrd'])->group(function () {
+// ---------------- LUPA PASSWORD (OTP) ----------------
+Route::get('/forgot', [AuthController::class, 'showForgotForm'])->name('forgot.form');
+Route::post('/forgot', [AuthController::class, 'sendOtp'])->name('forgot.send');
+
+// ---------------- OTP ----------------
+Route::get('/otp', [AuthController::class, 'showOtpForm'])->name('otp.form');
+Route::post('/otp', [AuthController::class, 'verifyOtp'])->name('otp.verify');
+Route::post('/otp/resend', [AuthController::class, 'resendOtp'])->name('otp.resend');
+
+// ---------------- RESET PASSWORD (pakai OTP) ----------------
+Route::get('/reset', [AuthController::class, 'showResetForm'])->name('reset.form');
+Route::post('/reset', [AuthController::class, 'resetPassword'])->name('reset.process');
+
+// ---------------- SET PASSWORD via EMAIL LINK ----------------
+Route::get('/set-password', [AuthController::class, 'showSetPasswordForm'])->name('set.password.form');
+Route::post('/set-password', [AuthController::class, 'setPassword'])->name('set.password');
+
+Route::middleware(['auth', 'HRD'])->group(function () {
     Route::get('/dashboard_hrd', [DashboardHRDController::class,'index'])->name('dashboard_hrd');
     Route::get('/riwayat_pengajuan', [RiwayatCutiHRDController::class,'index'])->name('riwayat_pengajuan.index');
     Route::get('/riwayat_pengajuan/export-pdf', [RiwayatCutiHRDController::class, 'exportPdf'])->name('cuti.exportPdf');
@@ -49,9 +70,20 @@ Route::middleware(['auth', 'hrd'])->group(function () {
     Route::put('/karyawan/{id_user}', [KaryawanController::class,'update'])->name('karyawan.update');
 });
 
-Route::middleware(['auth', 'superadmin'])->group(function () {
+Route::middleware(['auth', 'Superadmin'])->group(function () {
     Route::get('/dashboard_superadmin', [DashboardSuperadminController::class,'index'])->name('dashboard_superadmin');
     Route::get('/karyawan/{id_user}', [DashboardSuperadminController::class, 'show'])->name('karyawan.show');
     Route::post('/karyawan/{id_user}/terima',[DashboardSuperadminController::class,'setujuiAktifkanAkun'])->name('karyawan.setuju');
+    Route::get('/data_akun_active',[DataAkunController::class,'index'])->name('data_akun_active');
 
+});
+
+Route::middleware(['auth', 'Pegawai'])->group(function () {
+    Route::get('/dashboard_pegawai', [DashboardPegawaiController::class,'index'])->name('dashboard_pegawai');
+    
+});
+
+Route::middleware(['auth', 'Atasan'])->group(function () {
+    Route::get('/dashboard_atasan', [DashboardAtasanController::class,'index'])->name('dashboard_atasan');
+    
 });

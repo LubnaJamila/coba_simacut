@@ -40,10 +40,9 @@
                             @php
                                 $status = $item->status_akun; // misal status disimpan string: 'pengaktifan', 'aktif', 'penonaktifan', 'nonaktif'
                                 $badgeClass = match ($status) {
-                                    'pengaktifan' => 'bg-warning text-dark',
-                                    'aktif' => 'bg-success',
-                                    'penonaktifan' => 'bg-info text-dark',
-                                    'nonaktif' => 'bg-danger',
+                                    'Waiting-Activation' => 'bg-warning text-dark',
+                                    'Active' => 'bg-success',
+                                    'Non-Active' => 'bg-danger',
                                     default => 'bg-secondary',
                                 };
                             @endphp

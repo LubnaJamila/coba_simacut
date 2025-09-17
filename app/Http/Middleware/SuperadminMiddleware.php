@@ -10,7 +10,7 @@ class SuperadminMiddleware
 {
     public function handle(Request $request, Closure $next)
     {
-        if (auth()->check() && auth()->user()->role_user === 'superadmin') {
+        if (auth()->check() && auth()->user()->role_user === 'Superadmin') {
             return $next($request);
         }
 

@@ -14,7 +14,7 @@
                         <h6 class="card-title mb-0 fw-bold">Jatah Cuti Tahunan</h6>
                     </div>
                     <div>
-                        <h2 class="fw-bold mb-0">{{ $jatahCutiTahunan ?? 0 }}</h2>
+                        <h2 class="fw-bold mb-0">{{ $totalActive ?? 0 }}</h2>
                         <small class="text-muted">Hari ggftf</small>
                     </div>
                 </div>
@@ -31,7 +31,7 @@
                         <h6 class="card-title mb-0 fw-bold">Jumlah Cuti Bersama Tahunan</h6>
                     </div>
                     <div>
-                        <h2 class="fw-bold mb-0">{{ $totalCutiBersama ?? 0 }}</h2>
+                        <h2 class="fw-bold mb-0">{{ $totalWaiting ?? 0 }}</h2>
                         <small class="text-muted">Hari</small>
                     </div>
                 </div>
@@ -48,7 +48,7 @@
                         <h6 class="card-title mb-0 fw-bold">Jumlah Cuti Bersama Tahunan</h6>
                     </div>
                     <div>
-                        <h2 class="fw-bold mb-0">{{ $totalCutiBersama ?? 0 }}</h2>
+                        <h2 class="fw-bold mb-0">{{ $totalNonActive ?? 0 }}</h2>
                         <small class="text-muted">Hari</small>
                     </div>
                 </div>
@@ -63,6 +63,7 @@
             <tr>
                 <th>No</th>
                 <th>Nama Pegawai</th>
+                <th>Status Karyawan</th>
                 <th>Tanggal Mulai Kerja</th>
                 <th>Tanggal Selesai Kerja</th>
                 <th>Divisi</th>
@@ -77,8 +78,15 @@
                 <tr>
                     <td>{{ $index + 1 }}</td>
                     <td>{{ $item->nama_lengkap }}</td>
+                    <td>{{ $item->status_karyawan }}</td>
                     <td>{{ $item->tanggal_mulai_kerja?->format('Y-m-d') }}</td>
-                    <td>{{ $item->tanggal_selesai_kerja?->format('Y-m-d') }}</td>
+                    <td>
+                        @if ($item->tanggal_selesai_kerja)
+                            {{ $item->tanggal_selesai_kerja->format('Y-m-d') }}
+                        @else
+                            -
+                        @endif
+                    </td>
                     <td>{{ $item->divisi ?? '-' }}</td>
                     <td>{{ $item->jabatan ?? '-' }}</td>
                     <td>{{ $item->email }}</td>
