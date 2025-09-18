@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Mail\AccountActivatedMail;
 use App\Mail\AccountReactivatedMail;
+use App\Mail\AccountRejectedMail;
 use App\Models\CutiBersama;
 use App\Models\JatahCuti;
 use App\Models\JenisCuti;
@@ -138,6 +139,28 @@ class DashboardSuperadminController extends Controller
     return redirect()->route('dashboard_superadmin')
         ->with('success', 'Akun berhasil diaktifkan dan pegawai telah diberi notifikasi.');
 }
+
+public function tolakPengajuanAkun($id_user)
+{
+    $user = User::findOrFail($id_user);
+
+    // Ubah status jadi Non-Active / Rejected
+    $user->status_akun = 'Non-Active';
+    $user->save();
+
+    // Kirim email ke semua HRD yang aktif
+    $hrdList = User::where('role_user', 'HRD')
+                    ->where('status_akun', 'Active')
+                    ->get();
+
+    foreach ($hrdList as $hrd) {
+        Mail::to($hrd->email)->send(new AccountRejectedMail($user));
+    }
+
+    return redirect()->route('dashboard_superadmin')
+        ->with('error', 'Pengajuan akun telah ditolak dan notifikasi telah dikirim ke HRD.');
+}
+
 
 
 

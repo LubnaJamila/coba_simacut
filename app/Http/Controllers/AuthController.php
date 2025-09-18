@@ -17,46 +17,61 @@ class AuthController extends Controller
     }
 
     public function login(Request $request)
-    {
-        $credentials = $request->validate([
-            'email'    => 'required|email',
-            'password' => 'required'
-        ]);
+{
+    $credentials = $request->validate([
+        'email'    => 'required|email',
+        'password' => 'required'
+    ]);
 
-        if (Auth::attempt($credentials, $request->boolean('remember'))) {
-            $request->session()->regenerate();
+    // Cari user berdasarkan email
+    $user = User::where('email', $credentials['email'])->first();
 
-            $user = Auth::user();
+    if (!$user) {
+        return back()->withErrors(['email' => 'Email tidak ditemukan.']);
+    }
 
-            // cek status akun
-            if ($user->status_akun !== 'Active') {
-                Auth::logout();
-                return back()->withErrors(['email' => 'Akun Anda tidak aktif. Hubungi HRD.']);
-            }
+    // Cek password cocok atau tidak
+    if (!\Hash::check($credentials['password'], $user->password)) {
+        return back()->withErrors(['password' => 'Password yang Anda masukkan salah.']);
+    }
 
-            // cek must change password
-            if ($user->must_change_password) {
-                return redirect()->route('reset.form')->with('email', $user->email);
-            }
+    // Login pakai Auth
+    if (Auth::attempt($credentials, $request->boolean('remember'))) {
+        $request->session()->regenerate();
 
-            // redirect per role
-            switch ($user->role_user) {
-                case 'Superadmin':
-                    return redirect()->route('dashboard_superadmin');
-                case 'HRD':
-                    return redirect()->route('dashboard_hrd');
-                case 'Atasan':
-                    return redirect()->route('dashboard_atasan');
-                case 'Pegawai':
-                    return redirect()->route('dashboard_pegawai');
-                default:
-                    Auth::logout();
-                    return back()->withErrors(['email' => 'Role pengguna tidak dikenali.']);
-            }
+        $user = Auth::user();
+
+        // cek status akun
+        if ($user->status_akun !== 'Active') {
+            Auth::logout();
+            return back()->withErrors(['email' => 'Akun Anda tidak aktif. Hubungi HRD/yang bersangkutan.']);
         }
 
-        return back()->withErrors(['email' => 'Email atau password salah.']);
+        // cek must change password
+        if ($user->must_change_password) {
+            $request->session()->put('otp_email', $user->email);
+            return redirect()->route('reset.form')->with('email', $user->email);
+        }
+
+        // redirect per role
+        switch ($user->role_user) {
+            case 'Superadmin':
+                return redirect()->route('dashboard_superadmin');
+            case 'HRD':
+                return redirect()->route('dashboard_hrd');
+            case 'Atasan':
+                return redirect()->route('dashboard_atasan');
+            case 'Pegawai':
+                return redirect()->route('dashboard_pegawai');
+            default:
+                Auth::logout();
+                return back()->withErrors(['email' => 'Role pengguna tidak dikenali.']);
+        }
     }
+
+    return back()->withErrors(['email' => 'Terjadi kesalahan saat login.']);
+}
+
 
     public function logout(Request $request)
     {
@@ -191,7 +206,19 @@ class AuthController extends Controller
     {
         $request->validate([
             'email'    => 'required|email',
-            'password' => 'required|confirmed|min:6'
+            'password' => [
+                'required',
+                'confirmed',
+                'min:6',
+                'regex:/^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/'
+            ]
+        ], [
+            'email.required' => 'Email wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'password.required' => 'Password wajib diisi.',
+            'password.confirmed' => 'Konfirmasi password tidak cocok.',
+            'password.min' => 'Password minimal 6 karakter.',
+            'password.regex' => 'Password harus mengandung minimal 1 huruf besar, 1 angka, dan 1 karakter spesial.'
         ]);
 
         $user = User::where('email', $request->email)->first();
@@ -231,7 +258,17 @@ class AuthController extends Controller
     {
         $request->validate([
             'token'    => 'required',
-            'password' => 'required|confirmed|min:6',
+            'password' => [
+                'required',
+                'confirmed',
+                'min:6',
+                'regex:/^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/'
+            ],
+        ], [
+            'password.required' => 'Password wajib diisi.',
+            'password.confirmed' => 'Konfirmasi password tidak cocok.',
+            'password.min' => 'Password minimal 6 karakter.',
+            'password.regex' => 'Password harus mengandung minimal 1 huruf besar, 1 angka, dan 1 karakter spesial.'
         ]);
 
         $user = User::where('password_reset_token', $request->token)

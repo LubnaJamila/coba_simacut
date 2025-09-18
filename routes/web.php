@@ -74,6 +74,7 @@ Route::middleware(['auth', 'Superadmin'])->group(function () {
     Route::get('/dashboard_superadmin', [DashboardSuperadminController::class,'index'])->name('dashboard_superadmin');
     Route::get('/karyawan/{id_user}', [DashboardSuperadminController::class, 'show'])->name('karyawan.show');
     Route::post('/karyawan/{id_user}/terima',[DashboardSuperadminController::class,'setujuiAktifkanAkun'])->name('karyawan.setuju');
+    Route::post('/karyawan/{id_user}/tolak',[DashboardSuperadminController::class,'tolakPengajuanAkun'])->name('karyawan.tolak');
     Route::get('/data_akun_active',[DataAkunController::class,'index'])->name('data_akun_active');
 
 });

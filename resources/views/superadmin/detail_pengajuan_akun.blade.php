@@ -96,7 +96,7 @@
                 </form>
 
                 <!-- Form Tolak -->
-                <form action="#" method="POST">
+                <form action="{{route('karyawan.tolak', $karyawan->id_user)}}" method="POST">
                     @csrf
                     <button type="submit" class="btn btn-danger">
                         Tolak

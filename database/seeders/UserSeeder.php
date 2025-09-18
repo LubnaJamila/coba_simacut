@@ -16,7 +16,7 @@ class UserSeeder extends Seeder
     {
         User::create([
             'nama_lengkap' => 'HRD',
-            'email' => 'hrdtest@gmail.com',
+            'email' => 'lubnajamila062@gmail.com',
             'password' => Hash::make('123456'), // password di-hash
             'role_user' => 'HRD',
             'status_akun' => 'Active',
@@ -25,7 +25,7 @@ class UserSeeder extends Seeder
 
         User::create([
             'nama_lengkap' => 'Super Admin',
-            'email' => 'superadmin@gmail.com',
+            'email' => 'lubnajamila475@gmail.com',
             'password' => Hash::make('123456'),
             'role_user' => 'Superadmin',
             'status_akun' => 'Active',
